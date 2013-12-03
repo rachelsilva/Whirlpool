@@ -67,13 +67,6 @@ public class WhirlpoolOps {
 		return newState;
 	}
 	
-	public static byte[][] addRoundKeyWithKeygen(byte[][] state, byte[][] key, int roundCounter){
-		byte[][] newState;
-		byte[][] roundKey = getRoundKey(key, roundCounter);
-		newState = matrixXOR(state, roundKey);
-		return newState;
-	}
-	
 	public static byte[][] addRoundKey(byte[][] state, byte[][] roundKey){
 		byte[][] newState;
 		newState = matrixXOR(state, roundKey);
@@ -116,7 +109,7 @@ public class WhirlpoolOps {
 		return newByte;
 	}
 	
-	private static byte[][] matrixXOR(byte[][] aMat, byte[][] bMat){
+	public static byte[][] matrixXOR(byte[][] aMat, byte[][] bMat){
 		int aRows = aMat.length;
 		int aCols = aMat[0].length;
 		int bRows = bMat.length;
