@@ -106,8 +106,8 @@ public class WhirlpoolOps {
 	}
 	
 	private static byte sBoxSubstitution(byte oldByte){
-		int oldLBits = oldByte >> 4; 
-		int oldRBits = ((oldByte << 4) >> 4);
+		int oldLBits = oldByte >>> 4; 
+		int oldRBits = ((oldByte << 4) >>> 4);
 		int newLBits = sBox[oldLBits][oldRBits][0];
 		int newRBits = sBox[oldLBits][oldRBits][1];
 		byte newLByte = ((byte)(((byte) newLBits) << 4));
