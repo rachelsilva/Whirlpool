@@ -1,16 +1,17 @@
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class Whirlpool implements HashFunction{
-        
-        int mesLength = 0;
-        
+	
         int necessaryPaddingInv = 256;
-        
-        byte[] currentState = new byte[64];
         
         byte[] messageCounter = new byte[32];
         
-        ArrayList<Byte> message = new ArrayList<Byte>();
+        Queue<Byte> message = new LinkedList<Byte>();
+        
+        public Whirlpool(){
+        	initializeByteArray(messageCounter);
+        }
         
         @Override
         public int digestSize() {
@@ -28,11 +29,56 @@ public class Whirlpool implements HashFunction{
 
         @Override
         public void digest(byte[] d) {
+        	byte[][] currentState = new byte[8][8];
         	
         	//Step 1: Do padding
         	addPadding();
         	
         	//Step 2: Append Message Length
+        	appendMessageLength();
+        	
+        	//Step 3: Initialize Hash Matrix
+        	initialize2DByteArray(currentState);
+        	
+        	//Step 4:
+        	while(!message.isEmpty()){
+        		//Get the current message block
+        		byte[][] currentMessage = new byte[8][8];
+        		
+        		for(int i = 0; i < 8; i++){
+        			for(int j = 0; j < 8; j++){
+        				currentMessage[i][j] = message.remove();
+        			}
+        		}
+        		
+        		//Run the whirlpool block cipher
+        		byte[][] output = WBlockCipher(currentMessage, currentState);
+        		
+        		//Update the state with the Merkle-Damgard Construct
+        		currentState = WhirlpoolOps.matrixXOR(output, WhirlpoolOps.matrixXOR(currentMessage, currentState));
+        	}
+        	
+        	d = byte2Dto1DArray(currentState);
+        	
+        }
+        
+        private byte[][] WBlockCipher(byte[][] message, byte[][] key){
+        	byte[][] roundMessage = message;
+        	byte[][] roundKey = key;
+        	
+        	//Pre-Round key XOR
+        	roundMessage = WhirlpoolOps.matrixXOR(roundMessage, roundKey);
+        	
+        	//
+        	for(int i = 0; i < 10; i++){
+        		roundMessage = WhirlpoolOps.substituteBytes(roundMessage);
+        		roundMessage = WhirlpoolOps.shiftColumns(roundMessage);
+        		roundMessage = WhirlpoolOps.mixRows(roundMessage);
+        		roundKey = WhirlpoolOps.getRoundKey(roundKey, i);
+        		roundMessage = WhirlpoolOps.addRoundKey(roundMessage, roundKey);
+        	}
+        	
+        	return roundMessage;
         }
         
         private void addPadding(){
@@ -50,6 +96,12 @@ public class Whirlpool implements HashFunction{
                 message.add((byte)0);
                 necPad--;
             }
+        }
+        
+        private void appendMessageLength(){
+        	for(int i = 0; i < messageCounter.length; i++){
+        		message.add(messageCounter[i]);
+        	}
         }
         
         private void addMessageCounter(){
@@ -81,6 +133,37 @@ public class Whirlpool implements HashFunction{
         	}
         }
         
+        private byte[] byte2Dto1DArray(byte[][] array2D){
+        	int rowLen = array2D.length;
+        	int colLen = array2D[0].length;
+        	byte[] array1D = new byte[rowLen * colLen];
+        	
+        	//loop through and populate the array
+        	int pos = 0;
+        	
+        	for(int i = 0; i < rowLen; i++){
+        		for(int j = 0; j < colLen; j++){
+        			array1D[pos] = array2D[i][j];
+        			pos++;
+        		}
+        	}
+        	
+        	return array1D;
+        }
+        
+        private void initializeByteArray(byte[] array){
+        	for(int i = 0; i < array.length; i++){
+        		array[i] = (byte)0;
+        	}
+        }
+        
+        private void initialize2DByteArray(byte[][] array){
+        	for(int i = 0; i < array.length; i++){
+        		for(int j = 0; j < array[0].length; j++){
+        			array[i][j] = (byte)0;
+        		}
+        	}
+        }
         
         /**
          * @param args
