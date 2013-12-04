@@ -73,6 +73,29 @@ public class WhirlpoolOps {
 		return newState;
 	}
 	
+	//prints a byte matrix nicely
+    protected static String niceDisplay(byte[][] array2D){
+    	int rowLen = array2D.length;
+    	int colLen = array2D[0].length;
+    	
+    	String nice = "";
+    	for(int r = 0; r < rowLen; r++){
+    		for(int c = 0; c < colLen; c++){
+	    		String temp = Integer.toHexString(array2D[r][c]);
+	    		temp = temp.toUpperCase();
+	    		if(temp.length() == 8){
+	    			temp = temp.substring(6, 8);
+	    		}
+	    		else if(temp.length() == 1){
+	    			temp = "0" + temp;
+	    		}
+	    		nice += temp + " ";
+    		}
+    		nice += "\n";
+    	}
+    	return nice;
+    }
+	
 	public static byte[][] getRoundKey(byte[][] key, int roundCounter){
 		byte[][] newState = key;
 		byte[][] roundConstantMatrix;
@@ -90,7 +113,7 @@ public class WhirlpoolOps {
 			byte roundConstant = ((byte)((8 * (roundCounter-1))+f));
 			roundCounterMatrix[0][f] = sBoxSubstitution(roundConstant);
 		}
-		for(int i = 0; i < 8; i++){
+		for(int i = 1; i < 8; i++){
 			for(int j = 0; j < 8; j++){
 				roundCounterMatrix[i][j] = ((byte)0);
 			}
@@ -151,7 +174,7 @@ public class WhirlpoolOps {
 		for( int row = 0; row <aRows; row++){
 			for(int col = 0; col< bCols; col++){
 				for(int multMuve = 0; multMuve<aCols; multMuve++){
-					cMat[row][col] = (byte) (cMat[row][col]^((aMat[row][multMuve] * bMat[multMuve][col])));
+					cMat[row][col] ^= (aMat[row][multMuve] * bMat[multMuve][col]);
 				}
 			}
 		}
