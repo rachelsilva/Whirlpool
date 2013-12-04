@@ -65,8 +65,8 @@ public abstract class WhirlpoolAbstract implements HashFunction{
     	for (int i = messageCounter.length-1; i >= 0; i--) {
             carry += ((int)add & 0xFF) + (messageCounter[i] & 0xFF);
             messageCounter[i] = (byte)carry;
-            carry >>>= 8;
-            add >>>= 8;
+            carry = carry >>> 8;
+            add = add >>> 8;
         }
     	
     	//Keep track of padding necessary (inverse)
@@ -109,6 +109,44 @@ public abstract class WhirlpoolAbstract implements HashFunction{
     	for(int i = 0; i < from.length; i++){
     		to[i] = from[i];
     	}
+    }
+    
+    protected static String niceDisplay(byte[] array){
+    	String nice = "";
+    	for(int i = 0; i < array.length; i++){
+    		String temp = Integer.toHexString(array[i]);
+    		temp = temp.toUpperCase();
+    		if(temp.length() == 8){
+    			temp = temp.substring(6, 8);
+    		}
+    		else if(temp.length() == 1){
+    			temp = "0" + temp;
+    		}
+    		nice += temp;
+    	}
+    	return nice;
+    }
+    
+    protected static String niceDisplay(byte[][] array2D){
+    	int rowLen = array2D.length;
+    	int colLen = array2D[0].length;
+    	
+    	String nice = "";
+    	for(int r = 0; r < rowLen; r++){
+    		for(int c = 0; c < colLen; c++){
+	    		String temp = Integer.toHexString(array2D[r][c]);
+	    		temp = temp.toUpperCase();
+	    		if(temp.length() == 8){
+	    			temp = temp.substring(6, 8);
+	    		}
+	    		else if(temp.length() == 1){
+	    			temp = "0" + temp;
+	    		}
+	    		nice += temp + " ";
+    		}
+    		nice += "\n";
+    	}
+    	return nice;
     }
     
     protected void initializeByteArray(byte[] array){

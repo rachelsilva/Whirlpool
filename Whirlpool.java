@@ -1,6 +1,3 @@
-import java.util.LinkedList;
-import java.util.Queue;
-
 public class Whirlpool extends WhirlpoolAbstract{
 
 	public Whirlpool(){
@@ -31,6 +28,10 @@ public class Whirlpool extends WhirlpoolAbstract{
     			}
     		}
     		
+    		System.out.println("Message before block cipher");
+    		System.out.println(niceDisplay(currentMessage));
+    		System.out.println();
+    		
     		//Run the whirlpool block cipher
     		byte[][] output = WBlockCipher(currentMessage, currentState);
     		
@@ -51,13 +52,29 @@ public class Whirlpool extends WhirlpoolAbstract{
     	//Pre-Round key XOR
     	roundMessage = WhirlpoolOps.matrixXOR(roundMessage, roundKey);
     	
-    	//
-    	for(int i = 0; i < 10; i++){
+    	for(int i = 1; i < 11; i++){
+    		System.out.println("Current round is: " + (i));
+    		System.out.println();
     		roundMessage = WhirlpoolOps.substituteBytes(roundMessage);
+    		System.out.println("Message after byte substitution");
+    		System.out.println(niceDisplay(roundMessage));
+    		System.out.println();
     		roundMessage = WhirlpoolOps.shiftColumns(roundMessage);
+    		System.out.println("Message after column shift");
+    		System.out.println(niceDisplay(roundMessage));
+    		System.out.println();
     		roundMessage = WhirlpoolOps.mixRows(roundMessage);
+    		System.out.println("Message after row mix");
+    		System.out.println(niceDisplay(roundMessage));
+    		System.out.println();
     		roundKey = WhirlpoolOps.getRoundKey(roundKey, i);
+    		System.out.println("ROUND " + i + "KEY");
+    		System.out.println(niceDisplay(roundKey));
+    		System.out.println();
     		roundMessage = WhirlpoolOps.addRoundKey(roundMessage, roundKey);
+    		System.out.println("Message after round key add");
+    		System.out.println(niceDisplay(roundMessage));
+    		System.out.println();
     	}
     	
     	return roundMessage;
@@ -79,11 +96,11 @@ public class Whirlpool extends WhirlpoolAbstract{
     	Whirlpool wP = new Whirlpool();
     	byte[] d = new byte[wP.digestSize()];
     	wP.hash('a');
+    	wP.hash('b');
+    	wP.hash('c');
     	wP.digest(d);
-    	System.out.println("FINALMESSAGE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    	for(int i = 0; i < wP.digestSize(); i++){
-    		System.out.println(Integer.toHexString(d[i]));
-    	}
+    	System.out.println("FINALMESSAGE!!!!!!!!!!");
+    	System.out.println(niceDisplay(d));
         System.out.println("Not Broken!");
     }
 

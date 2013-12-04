@@ -2,7 +2,7 @@ import edu.rit.util.Hex;
 import edu.rit.util.Instance;
 import java.io.*;
 import java.util.Scanner;
-/*Modified vesrion of TimeHashFunction.java from CS lib */
+/*Modified version of TimeHashFunction.java from CS lib */
 public class WPFileReader
 	{
 	public static void main
