@@ -63,7 +63,7 @@ public class WhirlpoolOps {
 	
 	public static byte[][] mixRows(byte[][] state){
 		byte[][] newState = new byte[8][8];
-		newState = matrixMultiplication(newState, mrTransform);
+		newState = matrixMultiplication(state, mrTransform);
 		return newState;
 	}
 	
@@ -99,8 +99,8 @@ public class WhirlpoolOps {
 	}
 	
 	private static byte sBoxSubstitution(byte oldByte){
-		int oldLBits = oldByte >>> 4; 
-		int oldRBits = ((oldByte << 4) >>> 4);
+		int oldLBits = ((oldByte >>> 4) & 0x0F); 
+		int oldRBits = (((oldByte << 4) >>> 4) & 0x0F);
 		int newLBits = sBox[oldLBits][oldRBits][0];
 		int newRBits = sBox[oldLBits][oldRBits][1];
 		byte newLByte = ((byte)(((byte) newLBits) << 4));
@@ -142,10 +142,9 @@ public class WhirlpoolOps {
 		}
 		
 		byte[][] cMat = new byte[aRows][bCols];
-		
 		for(int row = 0; row < aRows; row++){
 			for(int col = 0; col < bCols; col++){
-				for(int multMove = 0; multMove < aCols;){
+				for(int multMove = 0; multMove < aCols; multMove++){
 					cMat[row][col] = ((byte)(aMat[row][multMove] * bMat[multMove][col]));
 				}
 			}
