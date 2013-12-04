@@ -140,12 +140,18 @@ public class WhirlpoolOps {
 		if(aCols != bRows){
 			throw new IllegalArgumentException("Illegal Matrix mulitplication");
 		}
-		
+		//Create a 0 matrix 
 		byte[][] cMat = new byte[aRows][bCols];
-		for(int row = 0; row < aRows; row++){
-			for(int col = 0; col < bCols; col++){
-				for(int multMove = 0; multMove < aCols; multMove++){
-					cMat[row][col] = ((byte)(aMat[row][multMove] * bMat[multMove][col]));
+		for( int crow = 0; crow < aRows; crow++){
+			for( int ccol = 0; ccol < bCols; ccol++){
+				cMat[crow][ccol]=0;
+			}
+		}
+		// Calculate the i,j element of cMat
+		for( int i = 0; i <aRows; i++){
+			for(int j = 0; j< bCols; j++){
+				for(int k = 0; k<aCols; k++){
+					cMat[i][j] += aMat[i][k] * bMat[k][j];
 				}
 			}
 		}
