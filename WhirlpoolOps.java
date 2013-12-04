@@ -148,10 +148,10 @@ public class WhirlpoolOps {
 			}
 		}
 		// Calculate the i,j element of cMat
-		for( int i = 0; i <aRows; i++){
-			for(int j = 0; j< bCols; j++){
-				for(int k = 0; k<aCols; k++){
-					cMat[i][j] += aMat[i][k] * bMat[k][j];
+		for( int row = 0; row <aRows; row++){
+			for(int col = 0; col< bCols; col++){
+				for(int multMuve = 0; multMuve<aCols; multMuve++){
+					cMat[row][col] = (byte) (cMat[row][col]^((aMat[row][multMuve] * bMat[multMuve][col])));
 				}
 			}
 		}
