@@ -9,15 +9,25 @@ public abstract class WhirlpoolAbstract implements HashFunction{
     
     Queue<Byte> message = new LinkedList<Byte>();
     
+    /**
+     * Constructor for the Whirlpool abstract class
+     * Initializes the messageCounter
+     */
     public WhirlpoolAbstract(){
     	initializeByteArray(messageCounter);
     }
     
+    /**
+     * Method to return the digest size
+     */
     @Override
     public int digestSize() {
     	return 64;
     }
 
+    /**
+     * Method to add the last 8 bits of the int passed in to the message to be hashed
+     */
     @Override
     public void hash(int b) {
     	byte c = (byte)(b & 0xFF);
@@ -27,11 +37,24 @@ public abstract class WhirlpoolAbstract implements HashFunction{
     	}
     }
 
+    /**
+     * Method to digest the message, implemented by inheritors
+     */
     @Override
 	public abstract void digest(byte[] d);
     
+    /**
+     * Method to run the W block cipher, implemented by inheritors
+     * 
+     * @param message The message block to be encrypted
+     * @param key The output from the previous run of the cipher or the initialization vector.
+     * @return The output of the block cipher
+     */
     protected abstract byte[][] WBlockCipher(byte[][] message, byte[][] key);
     
+    /**
+     * Method to add the necessary padding to the message
+     */
     protected void addPadding(){
     	int necPad;
     	if(necessaryPaddingInv == 0){
@@ -49,6 +72,9 @@ public abstract class WhirlpoolAbstract implements HashFunction{
         }
     }
     
+    /** 
+     * Method to append the length of the message to the end of the message
+     */
     protected void appendMessageLength(){
     	for(int i = 0; i < messageCounter.length; i++){
     		message.add(messageCounter[i]);
@@ -58,6 +84,10 @@ public abstract class WhirlpoolAbstract implements HashFunction{
     	initializeByteArray(messageCounter);
     }
     
+    /**
+     * Add a single byte to the message counter
+     * Also update the necessary padding
+     */
     private void addMessageCounter(){
     	//Update the message count
     	long add = 8;
@@ -73,6 +103,10 @@ public abstract class WhirlpoolAbstract implements HashFunction{
     	necessaryPaddingInv = (necessaryPaddingInv + 1) % 64;
     }
     
+    /**
+     * Method to check if we've run out of room for the message
+     * @return Whether we've run out or not
+     */
     private boolean messageLimitReach(){
     	for(int i = 0; i < messageCounter.length-2; i++){
     		if(messageCounter[i] != 0xFF){
@@ -87,6 +121,11 @@ public abstract class WhirlpoolAbstract implements HashFunction{
     	}
     }
     
+    /**
+     * Method to convert a 2D Byte array to a 1D
+     * @param array2D The 2D array to convert
+     * @return The 1D array spawned from the 2D array
+     */
     protected byte[] byte2Dto1DArray(byte[][] array2D){
     	int rowLen = array2D.length;
     	int colLen = array2D[0].length;
@@ -105,12 +144,24 @@ public abstract class WhirlpoolAbstract implements HashFunction{
     	return array1D;
     }
     
+    /**
+     * Method to copy values from a 1D array to another
+     * @param from The array to copy from
+     * @param to The array to copy to
+     */
     protected void byte1DarrayCopy(byte[] from, byte[] to){
     	for(int i = 0; i < from.length; i++){
     		to[i] = from[i];
     	}
     }
     
+    /**
+     * Method to print out a 1D byte array in a readable manner
+     * Used to print out the digest once done.
+     * 
+     * @param array The array you want to print
+     * @return The array as a nice looking String
+     */
     protected static String niceDisplay(byte[] array){
     	String nice = "";
     	for(int i = 0; i < array.length; i++){
@@ -127,6 +178,13 @@ public abstract class WhirlpoolAbstract implements HashFunction{
     	return nice;
     }
     
+    /**
+     * Method to print out a 2D byte array in a readable manner.
+     * Used for hand-testing intermediate state values 
+     * 
+     * @param array2D The 2D byte array you want to print
+     * @return The 2D array as a nice looking String
+     */
     protected static String niceDisplay(byte[][] array2D){
     	int rowLen = array2D.length;
     	int colLen = array2D[0].length;
@@ -149,12 +207,20 @@ public abstract class WhirlpoolAbstract implements HashFunction{
     	return nice;
     }
     
+    /**
+     * Initialize a byte array with all 0's
+     * @param array The array to initialize
+     */
     protected void initializeByteArray(byte[] array){
     	for(int i = 0; i < array.length; i++){
     		array[i] = (byte)0;
     	}
     }
     
+    /**
+     * Initialize a 2D byte array with all 0's
+     * @param array The array to initialize
+     */
     protected void initialize2DByteArray(byte[][] array){
     	for(int i = 0; i < array.length; i++){
     		for(int j = 0; j < array[0].length; j++){

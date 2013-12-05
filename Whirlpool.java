@@ -1,9 +1,13 @@
 public class Whirlpool extends WhirlpoolAbstract{
 
-        public Whirlpool(){
+	public Whirlpool(){
             super();
     }
-        
+	
+	/**
+	 * The digest function. Runs the Whirlpool Hash and fills the byte[] passed
+	 * in with the digest. 
+	 */
     @Override
     public void digest(byte[] d) {
             byte[][] currentState = new byte[8][8];
@@ -40,7 +44,11 @@ public class Whirlpool extends WhirlpoolAbstract{
             //Copy the data to the return array
             byte1DarrayCopy(finalOutput, d);
     }
-        
+    
+    /**
+     * Method to run the W BlockCipher on the message block and key passed in.
+     * Outputs the key for the next step.
+     */
     protected byte[][] WBlockCipher(byte[][] message, byte[][] key){
             byte[][] roundMessage = message;
             byte[][] roundKey = key;
@@ -63,23 +71,17 @@ public class Whirlpool extends WhirlpoolAbstract{
 * @param args
 */
     public static void main(String[] args) {
-            
-// for (int q = 0; q < (Integer.parseInt(args[0])); q++){
-// Whirlpool wP = new Whirlpool();
-// byte[] d = new byte[wP.digestSize()];
-// for(int w = 0; w < wP.digestSize(); w++){
-// wP.hash(0);
-// }
-// wP.digest(d);
-// }
-            Whirlpool wP = new Whirlpool();
-            byte[] d = new byte[wP.digestSize()];
-            wP.hash('a');
-            wP.hash('b');
-            wP.hash('c');
-            wP.digest(d);
-            System.out.println("FINALMESSAGE!!!!!!!!!!");
-            System.out.println(niceDisplay(d));
+            for(int i = 0; i < 10000; i++){
+            	Whirlpool wP = new Whirlpool();
+            	byte[] d = new byte[wP.digestSize()];
+	            wP.hash('a');
+	            wP.hash('b');
+	            wP.hash('c');
+	            wP.digest(d);
+	            
+            }
+            //System.out.println("FINALMESSAGE!!!!!!!!!!");
+            //System.out.println(niceDisplay(d));
         System.out.println("Not Broken!");
     }
 
