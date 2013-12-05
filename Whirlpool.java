@@ -66,23 +66,5 @@ public class Whirlpool extends WhirlpoolAbstract{
             
             return roundMessage;
     }
-        
-    /**
-* @param args
-*/
-    public static void main(String[] args) {
-            for(int i = 0; i < 10000; i++){
-            	Whirlpool wP = new Whirlpool();
-            	byte[] d = new byte[wP.digestSize()];
-	            wP.hash('a');
-	            wP.hash('b');
-	            wP.hash('c');
-	            wP.digest(d);
-	            
-            }
-            //System.out.println("FINALMESSAGE!!!!!!!!!!");
-            //System.out.println(niceDisplay(d));
-        System.out.println("Not Broken!");
-    }
 
 }
